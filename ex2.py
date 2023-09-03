@@ -1,5 +1,4 @@
-# Jogo da velha 4x4
-# Utiliza a mesma lógica do NxN, porém com o tamanho fixo em 4x4.
+# Jogo da velha NxN
 #
 # Para armazenar o tabuleiro, é construida uma matriz utilizando listas.
 #
