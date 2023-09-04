@@ -1,7 +1,5 @@
 # term.ooo
 #
-# Clone do jogo term.ooo
-#
 # Após ler o arquivo, são filtradas apenas palavras de 5 letras, removidos os
 # acentos, e escolhida uma palavra utilizando a biblioteca random.
 #
@@ -20,18 +18,14 @@ import random
 
 
 class colors:
-    BLACK = "\033[0;30m"
+    BLACK = "\033[1;30m"
     GREEN = "\033[0;32m"
     YELLOW = "\033[0;33m"
     BLUE = "\033[0;34m"
+    GREEN_BOLD = "\033[1;32m"
+    YELLOW_BOLD = "\033[1;33m"
+    BLUE_BOLD = "\033[1;34m"
     RESET = "\033[0;0m"
-
-
-class colors_bold:
-    BLACK = "\033[1;30m"
-    GREEN = "\033[1;32m"
-    YELLOW = "\033[1;33m"
-    BLUE = "\033[1;34m"
 
 
 def remove_diacritics(word):
@@ -67,7 +61,7 @@ def format_available_letters(used):
     all_letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K",
                    "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
     for letter in all_letters:
-        str += f"{colors_bold.BLUE}{letter}{colors.RESET} " if letter not in used else f"{colors.BLACK}{letter}{colors.RESET} "
+        str += f"{colors.BLUE_BOLD}{letter}{colors.RESET} " if letter not in used else f"{colors.BLACK}{letter}{colors.RESET} "
 
     return str
 
@@ -83,16 +77,16 @@ def validate_guess(guess, word):
     used = []
     for i, letter in enumerate(guess):
         if letter == word[i]:
-            result += f"{colors_bold.GREEN}{letter}{colors.RESET}"
+            result += f"{colors.GREEN_BOLD}{letter}{colors.RESET}"
         elif letter in word:
-            result += f"{colors_bold.YELLOW}{letter}{colors.RESET}"
+            result += f"{colors.YELLOW_BOLD}{letter}{colors.RESET}"
         else:
-            result += f"{colors_bold.BLACK}{letter}{colors.RESET}"
+            result += f"{colors.BLACK}{letter}{colors.RESET}"
             used.append(letter)
     return result, used
 
 
-def print_game(guesses, used_letters, win):
+def print_game(guesses, used_letters, correct_word=""):
     '''Imprime o "tabuleiro" do jogo.'''
     print()
     print("╭────────────────────── termooo ──────────────────────╮")
@@ -112,11 +106,16 @@ def print_game(guesses, used_letters, win):
     else:
         print(
             *[f"│                        {guess}                        │" for guess in guesses], sep="\n")
-    if not win:
+    if correct_word == "":
         print("│                        _____                        │")
-    print("│                                                     │")
-    print("├─ letras disponíveis ────────────────────────────────┤")
-    print(f"│ {format_available_letters(used_letters)}│")
+        print("│                                                     │")
+        print("├─ letras disponíveis ────────────────────────────────┤")
+        print(f"│ {format_available_letters(used_letters)}│")
+    else:
+        print("│                                                     │")
+        print(
+            f"│  a palavra correta era {colors.BLUE_BOLD}{correct_word}{colors.RESET}... tente novamente :)  │")
+        print("│                                                     │")
     print("╰─────────────────────────────────────────────────────╯")
     print()
 
@@ -140,11 +139,11 @@ used_letters = []
 guesses = []
 
 while turns > 0 and not win:
-    print_game(guesses, used_letters, win)
+    print_game(guesses, used_letters)
 
     guess = ""
     while len(guess) != 5:
-        guess = normalize_guess(input("Digite uma palavra (5 letras): "))
+        guess = normalize_guess(input("➡️  Digite uma palavra (5 letras): "))
 
     win = guess == word
     guess, used = validate_guess(guess, word)
@@ -153,4 +152,4 @@ while turns > 0 and not win:
     turns -= 1
 
 
-print_game(guesses, used_letters, win)
+print_game(guesses, used_letters, word)
